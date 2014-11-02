@@ -2,3 +2,7 @@
 /Realease/
 /ipch/
 /Debug/
+*.aps
+*.sdf
+*.opensdf
+*.v12.suo
