@@ -26,7 +26,6 @@ public:
 	HANDLE GethMutexx();
 	ThreadPool(DWORD n);
 	~ThreadPool();
-	//void AddTask(Task* NewTask);
 	void AddTask(int n);
 	void AddThread();
 	void RemoveThread();

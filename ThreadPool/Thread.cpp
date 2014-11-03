@@ -28,23 +28,18 @@ int _tmain(int argc, _TCHAR* argv[])
 		cout << "To add task enter ''task''" << endl;
 		cout << "To add thread enter ''threada''" << endl;
 		cout << "To remove thread enter ''threadr''" << endl;
+		cout << "To remove thread enter ''exit''" << endl;
 		ThreadPool* pool = new ThreadPool(nThreads);
 		while (true){
 			cin >> text;
 			if (strcmp(text, "task") == 0){
 				cout << "Input number of tasks: ''" << endl;
 				cin >> nTasks;
-				if (nTasks != 0){
+				if (nTasks > 0){
 					pool->AddTask(nTasks);
-					//WaitForSingleObject(pool->GethMutexx(), INFINITE);
-					/*for (unsigned i = 0; i < nTasks; i++){
-						pool->AddTask(new Task());
-					}*/
-					//ReleaseMutex(pool->GethMutexx());
 				}
-				else if (nTasks == 0){
-					delete pool;
-					return 0;
+				else {
+					cout << "Incorrect number of tasks: ''" << endl;
 				}
 			}
 			else if (strcmp(text, "threada") == 0){
@@ -54,6 +49,10 @@ int _tmain(int argc, _TCHAR* argv[])
 			}
 			else if (strcmp(text, "threadr") == 0){
 				pool->RemoveThread();
+			}
+			else if (strcmp(text, "exit")==0){
+				delete pool;
+				return 0;
 			}
 			else{
 				cout << "Unknown command." << endl;

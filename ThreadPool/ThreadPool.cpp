@@ -87,7 +87,8 @@ void ThreadPool::RemoveThread()
 		HANDLE threadId = threadQueue.front();
 		threadQueue.pop();
 		TerminateThread(threadId, 0);
-		Log("Thread was deleted.\n");
+		Log("Thread with id " + to_string(GetThreadId(threadId)) + " terminated\n");
+		//Log("Thread was deleted.\n");
 		ReleaseMutex(hMutexx);
 	}
 	else{
@@ -109,7 +110,21 @@ void ThreadPool::AddTask(int n)
 
 ThreadPool::~ThreadPool()
 {
-	for (unsigned i = 0; i < nThreads; i++)
+	while (!(threadQueue.empty())){
+		HANDLE threadId = threadQueue.front();
+		threadQueue.pop();
+		TerminateThread(threadId, 0);
+		WaitForSingleObject(threadId, INFINITE);
+		Log("Thread was deleted, " + to_string(GetThreadId(threadId)) + ".\n");
+		CloseHandle(threadId);
+		ReleaseMutex(hMutexx);
+	}
+	CloseHandle(hMutexx);
+	CloseHandle(mutexLog);
+	Log("Stopped. Press any key to exit.\n");
+	_getch();
+	ExitProcess(0);
+	/*for (unsigned i = 0; i < nThreads; i++)
 	{
 		TerminateThread(threads[i], 0);
 		WaitForSingleObject(threads[i], INFINITE);
@@ -117,14 +132,12 @@ ThreadPool::~ThreadPool()
 	}
 	for (unsigned i = 0; i < nThreads; i++) {
 		CloseHandle(threads[i]);
-	}
-	delete[] threads;
-	string str = "Counter = " + to_string(dwCounter);
-	Log(str);
-	CloseHandle(hMutexx);
-	CloseHandle(mutexLog);
-	_getch();
-	ExitProcess(0);
+	}*/
+
+	//delete[] threads;
+	/*string str = "Counter = " + to_string(dwCounter);
+	Log(str);*/
+	
 }
 HANDLE ThreadPool::GethMutexx()
 {
