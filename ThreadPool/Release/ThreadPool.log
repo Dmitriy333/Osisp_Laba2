@@ -1,15 +1,12 @@
-﻿Build started 02.11.2014 16:40:37.
+﻿Build started 03.11.2014 13:31:43.
      1>Project "E:\Учеба\5-ый семестр\ОСИСП\Лаба 22\ThreadPool\ThreadPool\ThreadPool.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yc"stdafx.h" /Fp"Release\ThreadPool.pch" /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt stdafx.cpp
-         stdafx.cpp
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Release\ThreadPool.pch" /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Task.cpp Thread.cpp ThreadPool.cpp
          Task.cpp
          Thread.cpp
-     1>Thread.cpp(42): warning C4018: '<' : signed/unsigned mismatch
-     1>Thread.cpp(16): warning C4101: 'c' : unreferenced local variable
+     1>Thread.cpp(17): warning C4101: 'c' : unreferenced local variable
          ThreadPool.cpp
-     1>ThreadPool.cpp(15): warning C4091: 'typedef ' : ignored on left of 'FUNCDATASTRUCT' when no variable is declared
+     1>ThreadPool.cpp(16): warning C4091: 'typedef ' : ignored on left of 'FUNCDATASTRUCT' when no variable is declared
      1>ThreadPool.cpp(20): warning C4244: 'argument' : conversion from 'time_t' to 'unsigned int', possible loss of data
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\Учеба\5-ый семестр\ОСИСП\Лаба 22\ThreadPool\Release\ThreadPool.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"E:\Учеба\5-ый семестр\ОСИСП\Лаба 22\ThreadPool\Release\ThreadPool.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\Учеба\5-ый семестр\ОСИСП\Лаба 22\ThreadPool\Release\ThreadPool.lib" /MACHINE:X86 /SAFESEH Release\stdafx.obj
@@ -17,11 +14,11 @@
          Release\Thread.obj
          Release\ThreadPool.obj
          Generating code
-     1>e:\учеба\5-ый семестр\осисп\лаба 22\threadpool\threadpool\threadpool.cpp(121): warning C4722: 'ThreadPool::~ThreadPool' : destructor never returns, potential memory leak
+     1>e:\учеба\5-ый семестр\осисп\лаба 22\threadpool\threadpool\threadpool.cpp(130): warning C4722: 'ThreadPool::~ThreadPool' : destructor never returns, potential memory leak
          Finished generating code
          ThreadPool.vcxproj -> E:\Учеба\5-ый семестр\ОСИСП\Лаба 22\ThreadPool\Release\ThreadPool.exe
      1>Done Building Project "E:\Учеба\5-ый семестр\ОСИСП\Лаба 22\ThreadPool\ThreadPool\ThreadPool.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:03.57
+Time Elapsed 00:00:03.59

@@ -2,19 +2,17 @@
 #include "ThreadPool.h"
 #include <stdlib.h>
 #include <time.h>
+#include <vector>
 DWORD dwCounter = 0;
 int numberOfThreads;
-HANDLE hMutexx;
-HANDLE mutexLog;
-HANDLE threadManageMutex;
 static int t = 1;
-std::vector<HANDLE> intVector;
+static HANDLE mutexLog;
+static HANDLE hMutexx;
 typedef struct FUNCDATASTRUCT {
 	ThreadPool* threadpool;
 	int ID;
 };
 int numberOfTask = 0;
-
 ThreadPool::ThreadPool(DWORD n)
 {
 	srand(time(NULL));
@@ -28,13 +26,12 @@ ThreadPool::ThreadPool(DWORD n)
 	if (NULL == mutexLog) {
 		Error(hStdOut, TEXT("Failed to create mutex for logining.\r\n"));
 	}
-	threadManageMutex = CreateMutex(NULL, FALSE, NULL);
 	CONST HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
-	for (int i = 0; i < 7; i++)
+	/*for (int i = 0; i < 7; i++)
 	{
 		Task* myTask = new Task();
 		this->AddTask((Task*)myTask);
-	}
+	}*/
 	initialize();
 }
 
@@ -56,8 +53,7 @@ void ThreadPool::initialize()
 				sizeof(FUNCDATASTRUCT));
 			myData->ID = i;
 			myData->threadpool = this;
-			//threads[i] = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadTask, (LPVOID)myData, NULL, &threadId);
-			intVector.push_back(CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadTask, (LPVOID)myData, NULL, &threadId));
+			threadQueue.push((CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadTask, (LPVOID)myData, NULL, &threadId)));
 			if (NULL == threads[i]) {
 				Error(hStdOut, TEXT("Failed to create thread.\r\n"));
 			}
@@ -73,31 +69,42 @@ void ThreadPool::AddThread()
 {
 	DWORD threadId;
 	FUNCDATASTRUCT* myData;
-	WaitForSingleObject(threadManageMutex, INFINITE);
+	WaitForSingleObject(hMutexx, INFINITE);
 	myData = (FUNCDATASTRUCT*)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY,
 		sizeof(FUNCDATASTRUCT));
 	myData->ID = nThreads++;
 	myData->threadpool = this;
-	intVector.push_back(CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadTask, (LPVOID)myData, NULL, &threadId));
-	Log("New thread was added\n");
-	ReleaseMutex(threadManageMutex);
+	threadQueue.push((CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadTask, (LPVOID)myData, NULL, &threadId)));
+	string str = "Thread created, id = " + to_string(threadId) + "\n";
+	Log(str);
+	ReleaseMutex(hMutexx);
 }
 void ThreadPool::RemoveThread()
 {
-	HANDLE threadId = intVector.front();
-	WaitForSingleObject(threadId, INFINITE);
-	TerminateThread(threadId, 0);
-	intVector.erase(intVector.begin());
-	Log("Thread was removed, id: " + to_string((DWORD)threadId) + "\n");
+	WaitForSingleObject(hMutexx, INFINITE);
+	if (!(threadQueue.empty()))
+	{
+		HANDLE threadId = threadQueue.front();
+		threadQueue.pop();
+		TerminateThread(threadId, 0);
+		Log("Thread was deleted.\n");
+		ReleaseMutex(hMutexx);
+	}
+	else{
+		ReleaseMutex(hMutexx);
+	}
 }
 
-void ThreadPool::AddTask(Task* NewTask)
+void ThreadPool::AddTask(int n)
 {
 	WaitForSingleObject(hMutexx, INFINITE);
-	tasksQueue.push(NewTask);
-	Log("New task was added.\n");
+	numberOfTask = 0;
+	for (int i = 0; i < n; i++)
+	{
+		tasksQueue.push(new Task);
+		Log("New task was added.\n");
+	}
 	ReleaseMutex(hMutexx);
-
 }
 
 ThreadPool::~ThreadPool()
@@ -119,26 +126,31 @@ ThreadPool::~ThreadPool()
 	_getch();
 	ExitProcess(0);
 }
-
+HANDLE ThreadPool::GethMutexx()
+{
+	return hMutexx;
+}
 void WINAPI ThreadPool::threadTask(LPVOID threadParams)
 {
 	Task* f;
-	WaitForSingleObject(hMutexx, INFINITE);
+	
 	FUNCDATASTRUCT* arguments = (FUNCDATASTRUCT*)threadParams;
 	ThreadPool* threadPool = arguments->threadpool;
+	boolean awaitingLog = false;
 	while (true)
 	{
+		WaitForSingleObject(hMutexx, INFINITE);
 		if (!(threadPool->tasksQueue.empty()))
 		{
 			f = threadPool->tasksQueue.front();
 			threadPool->tasksQueue.pop();
-			ReleaseMutex(hMutexx);
 			t = 1 + rand() % 5;
 			numberOfTask++;
 			Log("Thread " + to_string(arguments->ID) + " started doing task " + to_string(numberOfTask) + ", and sleeps : " + to_string(t) + " seconds. Thread's id: " + to_string(GetCurrentThreadId()) + "\n");
+			ReleaseMutex(hMutexx);
 			f->Execute(t * 1000);
 		}
-		else{
+		else {
 			ReleaseMutex(hMutexx);
 		}
 	}

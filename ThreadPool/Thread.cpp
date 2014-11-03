@@ -9,6 +9,7 @@
 #include "Thread.h"
 char *text = new char[128];
 int nTasks;
+HANDLE mutex = CreateMutex(NULL, FALSE, NULL);
 int _tmain(int argc, _TCHAR* argv[])
 {
 
@@ -24,24 +25,22 @@ int _tmain(int argc, _TCHAR* argv[])
 	}
 	else
 	{
-		ThreadPool* pool = new ThreadPool(nThreads);
-		//pool->AddTask(new Task());
-		//pool->AddTask(new Task());
-
-		//cout << text << endl;
-		//cin >> nThreads;
 		cout << "To add task enter ''task''" << endl;
 		cout << "To add thread enter ''threada''" << endl;
 		cout << "To remove thread enter ''threadr''" << endl;
+		ThreadPool* pool = new ThreadPool(nThreads);
 		while (true){
-			scanf_s("%s", text);
+			cin >> text;
 			if (strcmp(text, "task") == 0){
 				cout << "Input number of tasks: ''" << endl;
 				cin >> nTasks;
 				if (nTasks != 0){
-					for (unsigned i = 0; i < nTasks; i++){
+					pool->AddTask(nTasks);
+					//WaitForSingleObject(pool->GethMutexx(), INFINITE);
+					/*for (unsigned i = 0; i < nTasks; i++){
 						pool->AddTask(new Task());
-					}
+					}*/
+					//ReleaseMutex(pool->GethMutexx());
 				}
 				else if (nTasks == 0){
 					delete pool;
@@ -49,7 +48,9 @@ int _tmain(int argc, _TCHAR* argv[])
 				}
 			}
 			else if (strcmp(text, "threada") == 0){
+				WaitForSingleObject(pool->GethMutexx(), INFINITE);
 				pool->AddThread();
+				ReleaseMutex(pool->GethMutexx());
 			}
 			else if (strcmp(text, "threadr") == 0){
 				pool->RemoveThread();

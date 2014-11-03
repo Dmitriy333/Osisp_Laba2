@@ -17,16 +17,17 @@ class ThreadPool
 {
 private:
 	queue<Task*> tasksQueue;
+	queue<HANDLE> threadQueue;
 	void initialize();
 	HANDLE *threads;
 	DWORD nThreads;
-	//HANDLE hMutex;
-	//HANDLE mutexLog;
 	HANDLE hStdOut;
 public:
+	HANDLE GethMutexx();
 	ThreadPool(DWORD n);
 	~ThreadPool();
-	void AddTask(Task* NewTask);
+	//void AddTask(Task* NewTask);
+	void AddTask(int n);
 	void AddThread();
 	void RemoveThread();
 	void Run();
